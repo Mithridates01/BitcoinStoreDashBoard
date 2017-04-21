@@ -5,14 +5,8 @@ var blockchainInfoAPI = "https://api.blockchain.info/charts/market-price?timespa
 // sen get request to Bitcoin price API
 request( blockchainInfoAPI, function(error, response, body) {
   if (error) {console.log(error);}
-  // Parse to from json string to object
-  var filteredMarketData = ( JSON.parse(body) ).values;
 
-  for (var i = 0; i < filteredMarketData.length; i++) {
-    filteredMarketData[i]["x"] = unixtime2YYMMDD( filteredMarketData[i]["x"] );
-    changeKeyName("x", "date", filteredMarketData[i]);
-    changeKeyName("y", "BTC-USD", filteredMarketData[i]);
-  }
+  MarketData = filterMarketData( ( JSON.parse(body) ).values )
 
   // Package for API
   var priceData = {data: filteredMarketData };
@@ -21,7 +15,7 @@ request( blockchainInfoAPI, function(error, response, body) {
 
   // send data to Cyfe dashboard widget API-endpoint
   request.post(
-    "https://app.cyfe.com/api/push/58fa2729db0351121665713226483",
+    "https://app.cyfe.com/api/push/58fa2d637c35a1124440063226591",
     { json: priceData },
     function(error, response, body) {
       console.log(body);
@@ -29,6 +23,23 @@ request( blockchainInfoAPI, function(error, response, body) {
   );
 });
 
+
+function filterMarketData(objectArr) {
+  for (var i = 0; i < objectArr.length; i++) {
+    objectArr[i]["y"] = round( objectArr[i]["y"], 2 );
+    objectArr[i]["x"] = unixtime2YYMMDD( objectArr[i]["x"] );
+    changeKeyName("x", "date", objectArr[i]);
+    changeKeyName("y", "BTC-USD", objectArr[i]);
+  }
+
+
+  return object;
+}
+
+// Rounding to nearest cent
+function round(value, decimals) {
+  return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+}
 
 
 // Rename object key 
