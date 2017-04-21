@@ -7,10 +7,13 @@ request( blockchainInfoAPI, function(error, response, body) {
   if (error) {console.log(error);}
   // Parse to from json string to object
   var filteredMarketData = ( JSON.parse(body) ).values;
-  // convert unix time to YYMMDD format
+
   for (var i = 0; i < filteredMarketData.length; i++) {
     filteredMarketData[i]["x"] = unixtime2YYMMDD( filteredMarketData[i]["x"] );
+    changeKeyName("x", "date", filteredMarketData[i]);
+    changeKeyName("y", "BTC-USD", filteredMarketData[i]);
   }
+
   // Package for API
   var priceData = {data: filteredMarketData };
   console.log(priceData)
@@ -28,10 +31,16 @@ request( blockchainInfoAPI, function(error, response, body) {
 
 
 
-// Time conversion for spreadsheet
+// Rename object key 
+function changeKeyName(currentKeyStr, newKeyStr, object) {
+  if ( object.hasOwnProperty(currentKeyStr) ) {
+    object[newKeyStr] = object[currentKeyStr];
+    delete object[currentKeyStr];
+  }
+}
 
 
-
+// Time conversion UNIX to YY-MM-DD
 function padZero(number) {
     if (number < 10) {
         number = "0" + number;
@@ -49,5 +58,5 @@ function unixtime2YYMMDD(unixtime) {
     temp.push(padZero(dateObject.getUTCMonth() + 1));
     temp.push(padZero(dateObject.getUTCDate()));
 
-    return temp.join("");
+    return temp.join("-");
 }
