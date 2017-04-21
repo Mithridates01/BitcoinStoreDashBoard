@@ -1,5 +1,12 @@
+
+
+
+exports.handler = (event, context, callback) => {
+    // TODO implement
+
+
 var request = require("request");
-var blockchainInfoAPI = "https://api.blockchain.info/charts/market-price?timespan=5weeks&rollingAverage=1days&format=json";
+var blockchainInfoAPI = "https://api.blockchain.info/charts/market-price?timespan=2weeks&rollingAverage=1days&format=json";
 
 
 // sen get request to Bitcoin price API
@@ -10,15 +17,13 @@ request( blockchainInfoAPI, function(error, response, body) {
 
   // Package for API
   var priceData = {data: marketData };
-  console.log(priceData)
-
 
   // send data to Cyfe dashboard widget API-endpoint
   request.post(
     "https://app.cyfe.com/api/push/58fa37bbdb79f0278724893226715",
     { json: priceData },
     function(error, response, body) {
-      console.log(body);
+      // console.log(body);
     }
   );
 });
@@ -71,3 +76,7 @@ function unixtime2YYMMDD(unixtime) {
 
     return temp.join("-");
 }
+
+    
+    callback(null, 'Hello from Lambda');
+};
