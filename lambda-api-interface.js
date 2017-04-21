@@ -11,22 +11,19 @@ request( blockchainInfoAPI, function(error, response, body) {
   for (var i = 0; i < filteredMarketData.length; i++) {
     filteredMarketData[i]["x"] = unixtime2YYMMDD( filteredMarketData[i]["x"] );
   }
-
-  console.log(filteredMarketData);
-
+  // Package for API
   var priceData = {data: filteredMarketData };
-
   console.log(priceData)
 
 
-  // send data to Cyfe dashboard widget API-endpoint
-  // request.post(
-  //   "https://app.cyfe.com/api/push/58f92260867121476148803224444",
-  //   { json: priceData },
-  //   function(error, response, body) {
-  //     console.log(body);
-  //   }
-  // );
+  send data to Cyfe dashboard widget API-endpoint
+  request.post(
+    "https://app.cyfe.com/api/push/58f92260867121476148803224444",
+    { json: priceData },
+    function(error, response, body) {
+      console.log(body);
+    }
+  );
 });
 
 
