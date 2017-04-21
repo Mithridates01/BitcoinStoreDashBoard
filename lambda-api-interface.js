@@ -15,7 +15,7 @@ request( blockchainInfoAPI, function(error, response, body) {
 
   // send data to Cyfe dashboard widget API-endpoint
   request.post(
-    "https://app.cyfe.com/api/push/58fa31fbb5b024784688903226664",
+    "https://app.cyfe.com/api/push/58fa37bbdb79f0278724893226715",
     { json: priceData },
     function(error, response, body) {
       console.log(body);
