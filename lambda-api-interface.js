@@ -6,10 +6,10 @@ var blockchainInfoAPI = "https://api.blockchain.info/charts/market-price?timespa
 request( blockchainInfoAPI, function(error, response, body) {
   if (error) {console.log(error);}
 
-  MarketData = filterMarketData( ( JSON.parse(body) ).values )
+  marketData = filterMarketData( ( JSON.parse(body) ).values )
 
   // Package for API
-  var priceData = {data: filteredMarketData };
+  var priceData = {data: marketData };
   console.log(priceData)
 
 
@@ -33,7 +33,7 @@ function filterMarketData(objectArr) {
   }
 
 
-  return object;
+  return objectArr;
 }
 
 // Rounding to nearest cent
