@@ -1,4 +1,4 @@
-exports.myHandler = function(event, context, callback) {
+exports.handler = function(event, context, callback) {
 
 var request = require("request");
 var blockchainInfoAPI = "https://api.blockchain.info/charts/market-price?timespan=2weeks&rollingAverage=1days&format=json";
@@ -8,7 +8,7 @@ var blockchainInfoAPI = "https://api.blockchain.info/charts/market-price?timespa
 request( blockchainInfoAPI, function(error, response, body) {
   if (error) {console.log(error);}
 
-  marketData = filterMarketData( ( JSON.parse(body) ).values )
+  marketData = filterMarketData( ( JSON.parse(body) ).values );
 
   // Dashboard API payload;
   // Onduplicate prevents matching data from past combining in dashboard
@@ -30,8 +30,8 @@ request( blockchainInfoAPI, function(error, response, body) {
 
 function filterMarketData(objectArr) {
   for (var i = 0; i < objectArr.length; i++) {
-    objectArr[i]["y"] = round( objectArr[i]["y"], 2 );
-    objectArr[i]["x"] = unixtime2YYMMDD( objectArr[i]["x"] );
+    objectArr[i].y = round( objectArr[i].y, 2 );
+    objectArr[i].x = unixtime2YYMMDD( objectArr[i].x );
     changeKeyName("x", "date", objectArr[i]);
     changeKeyName("y", "BTC-USD", objectArr[i]);
   }
@@ -78,5 +78,5 @@ function unixtime2YYMMDD(unixtime) {
 
 
   // Use callback() and return information to the caller.
-  callback(Error error, Object result);
-}
+  callback(Error, Object);
+};
