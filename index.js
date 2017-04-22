@@ -11,7 +11,8 @@ request( blockchainInfoAPI, function(error, response, body) {
   // Dashboard API payload; 
   // Onduplicate prevents matching data from past combining in dashboard 
   var priceData = {       data: marketData,
-                   onduplicate: { "BTC-USD": "replace"} 
+                   onduplicate: { "BTC-USD": "replace"},
+                     yaxisshow: {"BTC-USD": "1"}
                   };
 
   // send data to Cyfe dashboard widget API-endpoint
