@@ -1,3 +1,5 @@
+exports.myHandler = function(event, context, callback) {
+
 var request = require("request");
 var blockchainInfoAPI = "https://api.blockchain.info/charts/market-price?timespan=2weeks&rollingAverage=1days&format=json";
 
@@ -8,8 +10,8 @@ request( blockchainInfoAPI, function(error, response, body) {
 
   marketData = filterMarketData( ( JSON.parse(body) ).values )
 
-  // Dashboard API payload; 
-  // Onduplicate prevents matching data from past combining in dashboard 
+  // Dashboard API payload;
+  // Onduplicate prevents matching data from past combining in dashboard
   var priceData = {       data: marketData,
                    onduplicate: { "BTC-USD": "replace"},
                      yaxisshow: {"BTC-USD": "1"}
@@ -44,7 +46,7 @@ function round(value, decimals) {
 }
 
 
-// Rename object key 
+// Rename object key
 function changeKeyName(currentKeyStr, newKeyStr, object) {
   if ( object.hasOwnProperty(currentKeyStr) ) {
     object[newKeyStr] = object[currentKeyStr];
@@ -72,4 +74,9 @@ function unixtime2YYMMDD(unixtime) {
     temp.push(padZero(dateObject.getUTCDate()));
 
     return temp.join("-");
+}
+
+
+  // Use callback() and return information to the caller.
+  callback(Error error, Object result);
 }
