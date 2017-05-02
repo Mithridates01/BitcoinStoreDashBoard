@@ -26,6 +26,8 @@ var orderCountParams   = "?status=any&created_at_min=" + dateRang.startingYYYYMM
 var shopifyOrderCount = "https://" + apiKey + ":" + apiPassword + "@" + hostname + orderCountPath + orderCountParams;
 console.log(shopifyOrderCount);
 
+
+// Check order count
 var orderCount;
 var shopifyRecordsLimit = 250;
 
@@ -35,17 +37,45 @@ request( shopifyOrderCount, function(error, response, body) {
   } else {
     orderCount = JSON.parse(body).count;
     console.log(orderCount);
+
+    if (orderCount > shopifyRecordsLimit) {
+      // break into 15 requests; 2 day spans
+      // console.log("to many orders");
+      retreiveShopifySalesData();
+    } else {
+
+    }
   }
 });
 
 
-// if (orderCount > shopifyRecordsLimit) {
-//   // break into 15 requests; 2 day spans
-// }
+function sendSalesDataCyfeDashBoard() {
 
-var orderRecordsPath   = "/admin/reports.json";
-var orderRecordsParams = "?status=any&created_at_min=" + dateRang.startingYYYYMMD + "&created_at_max=" + dateRang.endingYYYYMMDD + "&fields=created-at,total-price&limit=250&page=1";
-var shopifyOrderRecords = "https://" + apiKey + ":" + apiPassword + "@" + hostname ;
+
+}
+
+function orgSalesData() {
+
+}
+
+function shopifyMultiDataCall(argument) {
+  // body...
+}
+
+function combineMultiDataCallResults(){
+
+}
+
+function retreiveShopifySalesData(startDate, endDate) {
+  startDate = startDate || dateRang.startingYYYYMMD;
+  endDate   = endDate   || dateRang.endingYYYYMMDD;
+  console.log("start & end dates",startDate,endDate)
+
+  var orderRecordsPath   = "/admin/reports.json";
+  var orderRecordsParams = "?status=any&created_at_min=" + startDate + "&created_at_max=" + endDate + "&fields=created-at,total-price&limit=250&page=1";
+  var shopifyOrderRecords = "https://" + apiKey + ":" + apiPassword + "@" + hostname + orderRecordsPath + orderRecordsParams;
+
+}
 
 
 
