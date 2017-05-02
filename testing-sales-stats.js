@@ -1,42 +1,29 @@
 var request = require("request");
-var dateFns = require("date-fns");
+// Dates Library modules
 var parse = require('date-fns/parse');
 var subDays = require('date-fns/sub_days')
 var format = require('date-fns/format')
-// https://bitcoin-com-store.myshopify.com/admin/orders.json?status=any&created_at_min=2017-04-01&created_at_max=2017-05-01&fields=created-at,total-price&limit=250&page=1
-// COUNT of orders
-// https://bitcoin-com-store.myshopify.com/admin/orders/count.json?status=any&created_at_min=2017-04-01&created_at_max=2017-05-01
 
 // SPLIT IMPLEMENTATION
-// DUE to Shopify API request records limitation of 250 max; This will check total number of purchases for last 30 days
-// and then split into multiple requests if total is greater than 250; then reassemble into one object
+    // due to Shopify API request records limitation of 250 max; This will check total number of purchases for last 30 days
+    // and then split into multiple requests if total is greater than 250; then reassemble into one object
 var apiKey             = process.env.SPOTIFY_API_KEY;
 var apiPassword        = process.env.SPOTIFY_API_PASSWORD; //my be same as key
 var hostname           = "bitcoin-com-store.myshopify.com";
-var orderRecordsPath   = "/admin/reports.json";
-var orderRecordsParams = "?status=any&created_at_min=2017-04-01&created_at_max=2017-05-01&fields=created-at,total-price&limit=250&page=1";
 
-// last 30 days
-var shopifyOrderRecords = "https://" + apiKey + ":" + apiPassword + "@" + hostname ;
-
-// check order count
-
-// function for picking starting date of last 30 days
+// create date rang last 30 days
 var dateFormat = "YY-MM-DD"
 var yesterdayDT = subDays( parse(Date.now()), 1 );
 
 var dateRang = {
-  endingYYMMDD  : format(yesterdayDT, dateFormat);
+  endingYYMMDD  : format(yesterdayDT, dateFormat),
   startingYYMMD : format(subDays( yesterdayDT, 30 ), dateFormat )
 }
-
-
-
-  // subtract 30 days for starting date
+console.log(dateRang.startingYYMMD, dateRang.endingYYMMDD);
 
 var shopifyOrderCount = "https://" + apiKey + ":" + apiPassword + "@" + hostname + orderCountPath + orderCountParams;
 var orderCountPath     = "/admin/orders/count.json";
-var orderCountParams   = "?status=any&created_at_min=" + "2017-04-01" + "&created_at_max=" + "2017-05-01";
+var orderCountParams   = "?status=any&created_at_min=" + dateRang.startingYYMMD + "&created_at_max=" + dateRang.endingYYMMDD;
 
 // var orderCount;
 // var shopifyRecordsLimit = 250;
@@ -53,6 +40,13 @@ var orderCountParams   = "?status=any&created_at_min=" + "2017-04-01" + "&create
 // if (orderCount > shopifyRecordsLimit) {
 //   // break into 15 requests; 2 day spans
 // }
+
+var orderRecordsPath   = "/admin/reports.json";
+var orderRecordsParams = "?status=any&created_at_min=" + dateRang.startingYYMMD + "&created_at_max=" + dateRang.endingYYMMDD + "&fields=created-at,total-price&limit=250&page=1";
+var shopifyOrderRecords = "https://" + apiKey + ":" + apiPassword + "@" + hostname ;
+
+
+
 
 
 // request( spotifySalesApi, function(error, response, body) {
