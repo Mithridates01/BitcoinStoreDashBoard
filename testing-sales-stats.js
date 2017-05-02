@@ -10,23 +10,33 @@ var apiKey             = process.env.SPOTIFY_API_KEY;
 var apiPassword        = process.env.SPOTIFY_API_PASSWORD; //my be same as key
 var hostname           = "bitcoin-com-store.myshopify.com";
 var orderRecordsPath   = "/admin/reports.json";
-var orderCountPath     = "/admin/orders/count.json";
 var orderRecordsParams = "?status=any&created_at_min=2017-04-01&created_at_max=2017-05-01&fields=created-at,total-price&limit=250&page=1";
-var orderCountParams   = "?status=any&created_at_min=" + "2017-04-01" + "&created_at_max=" + "2017-05-01";
 
 // last 30 days
 var shopifyOrderRecords = "https://" + apiKey + ":" + apiPassword + "@" + hostname ;
-var shopifyOrderCount = "https://" + apiKey + ":" + apiPassword + "@" + hostname + orderCountPath + orderCountParams;
 
 // check order count
+
+
+var shopifyOrderCount = "https://" + apiKey + ":" + apiPassword + "@" + hostname + orderCountPath + orderCountParams;
+var orderCountPath     = "/admin/orders/count.json";
+var orderCountParams   = "?status=any&created_at_min=" + "2017-04-01" + "&created_at_max=" + "2017-05-01";
+
 var orderCount;
+var shopifyRecordsLimit = 250;
 request( shopifyOrderCount, function(error, response, body) {
   if (error) {
     console.log(error);
   } else {
-    console.log(body);
+    orderCount = JSON.parse(body).count;
+    console.log(orderCount);
   }
 });
+
+
+if (orderCount > shopifyRecordsLimit) {
+  // break into 15 requests; 2 day spans
+}
 
 
 // request( spotifySalesApi, function(error, response, body) {
