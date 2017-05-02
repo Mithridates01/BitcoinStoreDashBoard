@@ -12,29 +12,31 @@ var apiPassword        = process.env.SPOTIFY_API_PASSWORD; //my be same as key
 var hostname           = "bitcoin-com-store.myshopify.com";
 
 // create date rang last 30 days
-var dateFormat = "YY-MM-DD"
+var dateFormat = "YYYY-MM-DD"
 var yesterdayDT = subDays( parse(Date.now()), 1 );
 
 var dateRang = {
-  endingYYMMDD  : format(yesterdayDT, dateFormat),
-  startingYYMMD : format(subDays( yesterdayDT, 30 ), dateFormat )
+  endingYYYYMMDD  : format(yesterdayDT, dateFormat),
+  startingYYYYMMD : format(subDays( yesterdayDT, 30 ), dateFormat )
 }
-console.log(dateRang.startingYYMMD, dateRang.endingYYMMDD);
+console.log(dateRang.startingYYYYMMD, dateRang.endingYYYYMMDD);
 
-var shopifyOrderCount = "https://" + apiKey + ":" + apiPassword + "@" + hostname + orderCountPath + orderCountParams;
 var orderCountPath     = "/admin/orders/count.json";
-var orderCountParams   = "?status=any&created_at_min=" + dateRang.startingYYMMD + "&created_at_max=" + dateRang.endingYYMMDD;
+var orderCountParams   = "?status=any&created_at_min=" + dateRang.startingYYYYMMD + "&created_at_max=" + dateRang.endingYYYYMMDD;
+var shopifyOrderCount = "https://" + apiKey + ":" + apiPassword + "@" + hostname + orderCountPath + orderCountParams;
+console.log(shopifyOrderCount);
 
-// var orderCount;
-// var shopifyRecordsLimit = 250;
-// request( shopifyOrderCount, function(error, response, body) {
-//   if (error) {
-//     console.log(error);
-//   } else {
-//     orderCount = JSON.parse(body).count;
-//     console.log(orderCount);
-//   }
-// });
+var orderCount;
+var shopifyRecordsLimit = 250;
+
+request( shopifyOrderCount, function(error, response, body) {
+  if (error) {
+    console.log(error);
+  } else {
+    orderCount = JSON.parse(body).count;
+    console.log(orderCount);
+  }
+});
 
 
 // if (orderCount > shopifyRecordsLimit) {
@@ -42,7 +44,7 @@ var orderCountParams   = "?status=any&created_at_min=" + dateRang.startingYYMMD 
 // }
 
 var orderRecordsPath   = "/admin/reports.json";
-var orderRecordsParams = "?status=any&created_at_min=" + dateRang.startingYYMMD + "&created_at_max=" + dateRang.endingYYMMDD + "&fields=created-at,total-price&limit=250&page=1";
+var orderRecordsParams = "?status=any&created_at_min=" + dateRang.startingYYYYMMD + "&created_at_max=" + dateRang.endingYYYYMMDD + "&fields=created-at,total-price&limit=250&page=1";
 var shopifyOrderRecords = "https://" + apiKey + ":" + apiPassword + "@" + hostname ;
 
 
