@@ -1,4 +1,6 @@
 var request = require("request");
+var dateFns = require("date-fns");
+var parse = require('date-fns/parse');
 // https://bitcoin-com-store.myshopify.com/admin/orders.json?status=any&created_at_min=2017-04-01&created_at_max=2017-05-01&fields=created-at,total-price&limit=250&page=1
 // COUNT of orders
 // https://bitcoin-com-store.myshopify.com/admin/orders/count.json?status=any&created_at_min=2017-04-01&created_at_max=2017-05-01
@@ -17,26 +19,33 @@ var shopifyOrderRecords = "https://" + apiKey + ":" + apiPassword + "@" + hostna
 
 // check order count
 
+// function for picking starting date of last 30 days
+var yesterdayUnixDT = parse(Date.now());
+console.log(yesterdayUnixDT);
+var yesterdayDateYYMMDD =
+console.log(yesterdayDateYYMMDD);
+  // grab current date -1 day for end date
+  // subtract 30 days for starting date
 
 var shopifyOrderCount = "https://" + apiKey + ":" + apiPassword + "@" + hostname + orderCountPath + orderCountParams;
 var orderCountPath     = "/admin/orders/count.json";
 var orderCountParams   = "?status=any&created_at_min=" + "2017-04-01" + "&created_at_max=" + "2017-05-01";
 
-var orderCount;
-var shopifyRecordsLimit = 250;
-request( shopifyOrderCount, function(error, response, body) {
-  if (error) {
-    console.log(error);
-  } else {
-    orderCount = JSON.parse(body).count;
-    console.log(orderCount);
-  }
-});
+// var orderCount;
+// var shopifyRecordsLimit = 250;
+// request( shopifyOrderCount, function(error, response, body) {
+//   if (error) {
+//     console.log(error);
+//   } else {
+//     orderCount = JSON.parse(body).count;
+//     console.log(orderCount);
+//   }
+// });
 
 
-if (orderCount > shopifyRecordsLimit) {
-  // break into 15 requests; 2 day spans
-}
+// if (orderCount > shopifyRecordsLimit) {
+//   // break into 15 requests; 2 day spans
+// }
 
 
 // request( spotifySalesApi, function(error, response, body) {
@@ -46,11 +55,6 @@ if (orderCount > shopifyRecordsLimit) {
 //     console.log(body);
 //   }
 // });
-
-
-
-
-
 
 
 
