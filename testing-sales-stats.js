@@ -24,9 +24,12 @@ var shopifyOrderRecords = "https://" + apiKey + ":" + apiPassword + "@" + hostna
 // function for picking starting date of last 30 days
 var dateFormat = "YY-MM-DD"
 var yesterdayDT = subDays( parse(Date.now()), 1 );
-var endingYYMMDD = format(yesterdayDT, dateFormat);
-var startingYYMMD = format(subDays( yesterdayDT, 30 ), dateFormat )
-console.log(yesterdayDT, endingYYMMDD, startingYYMMD);
+
+var dateRang = {
+  endingYYMMDD  : format(yesterdayDT, dateFormat);
+  startingYYMMD : format(subDays( yesterdayDT, 30 ), dateFormat )
+}
+
 
 
   // subtract 30 days for starting date
