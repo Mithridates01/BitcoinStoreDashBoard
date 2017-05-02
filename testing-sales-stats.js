@@ -1,6 +1,8 @@
 var request = require("request");
 var dateFns = require("date-fns");
 var parse = require('date-fns/parse');
+var subDays = require('date-fns/sub_days')
+var format = require('date-fns/format')
 // https://bitcoin-com-store.myshopify.com/admin/orders.json?status=any&created_at_min=2017-04-01&created_at_max=2017-05-01&fields=created-at,total-price&limit=250&page=1
 // COUNT of orders
 // https://bitcoin-com-store.myshopify.com/admin/orders/count.json?status=any&created_at_min=2017-04-01&created_at_max=2017-05-01
@@ -20,11 +22,13 @@ var shopifyOrderRecords = "https://" + apiKey + ":" + apiPassword + "@" + hostna
 // check order count
 
 // function for picking starting date of last 30 days
-var yesterdayUnixDT = parse(Date.now());
-console.log(yesterdayUnixDT);
-var yesterdayDateYYMMDD =
-console.log(yesterdayDateYYMMDD);
-  // grab current date -1 day for end date
+var dateFormat = "YY-MM-DD"
+var yesterdayDT = subDays( parse(Date.now()), 1 );
+var endingYYMMDD = format(yesterdayDT, dateFormat);
+var startingYYMMD = format(subDays( yesterdayDT, 30 ), dateFormat )
+console.log(yesterdayDT, endingYYMMDD, startingYYMMD);
+
+
   // subtract 30 days for starting date
 
 var shopifyOrderCount = "https://" + apiKey + ":" + apiPassword + "@" + hostname + orderCountPath + orderCountParams;
