@@ -1,8 +1,9 @@
-var request = require("request");
+const request = require('request');
+const EventEmitter = require('events').EventEmitter;
 // Dates Library modules
-var parse = require('date-fns/parse');
-var subDays = require('date-fns/sub_days')
-var format = require('date-fns/format')
+const parse = require('date-fns/parse');
+const subDays = require('date-fns/sub_days')
+const format = require('date-fns/format')
 
 // SPLIT IMPLEMENTATION
     // due to Shopify API request records limitation of 250 max; This will check total number of purchases for last 30 days
@@ -11,7 +12,7 @@ var apiKey             = process.env.SPOTIFY_API_KEY;
 var apiPassword        = process.env.SPOTIFY_API_PASSWORD; //my be same as key
 var hostname           = "bitcoin-com-store.myshopify.com";
 
-// create date rang last 30 days
+// create date range last 30 days
 var dateFormat = "YYYY-MM-DD"
 var yesterdayDT = subDays( parse(Date.now()), 1 );
 
@@ -19,12 +20,12 @@ var dateRang = {
   endingYYYYMMDD  : format(yesterdayDT, dateFormat),
   startingYYYYMMD : format(subDays( yesterdayDT, 30 ), dateFormat )
 }
-console.log(dateRang.startingYYYYMMD, dateRang.endingYYYYMMDD);
+// console.log(dateRang.startingYYYYMMD, dateRang.endingYYYYMMDD);
 
 var orderCountPath     = "/admin/orders/count.json";
 var orderCountParams   = "?status=any&created_at_min=" + dateRang.startingYYYYMMD + "&created_at_max=" + dateRang.endingYYYYMMDD;
 var shopifyOrderCount = "https://" + apiKey + ":" + apiPassword + "@" + hostname + orderCountPath + orderCountParams;
-console.log(shopifyOrderCount);
+// console.log(shopifyOrderCount);
 
 
 // Check order count
@@ -41,7 +42,8 @@ request( shopifyOrderCount, function(error, response, body) {
     if (orderCount > shopifyRecordsLimit) {
       // break into 15 requests; 2 day spans
       // console.log("to many orders");
-      retreiveShopifySalesData();
+      // retreiveShopifySalesData()
+      console.log(retreiveShopifySalesData());
     } else {
 
     }
@@ -66,16 +68,38 @@ function combineMultiDataCallResults(){
 
 }
 
-function retreiveShopifySalesData(startDate, endDate) {
+
+
+function retreiveShopifySalesData(startDate, endDate, callback) {
   startDate = startDate || dateRang.startingYYYYMMD;
   endDate   = endDate   || dateRang.endingYYYYMMDD;
-  console.log("start & end dates",startDate,endDate)
+  console.log("start & end dates",startDate,endDate);
 
-  var orderRecordsPath   = "/admin/reports.json";
+  var salesData;
+
+  var orderRecordsPath   = "/admin/orders.json";
   var orderRecordsParams = "?status=any&created_at_min=" + startDate + "&created_at_max=" + endDate + "&fields=created-at,total-price&limit=250&page=1";
   var shopifyOrderRecords = "https://" + apiKey + ":" + apiPassword + "@" + hostname + orderRecordsPath + orderRecordsParams;
 
+// This is way to nested.... get help with refactor
+  request.get(shopifyOrderRecords, function(error, response, body){
+    console.log(error);
+    // console.log(body);
+    salesData = body;
+  })
+  // return data
+  while (salesData === undefined) {};
+  console.log(salesData, "logging");
+  return salesData;
 }
+
+// retreiveShopifySalesData()
+//   .then(function(response) {
+//     handleResponse();
+//   })
+//   .fail(function(err) {
+//     console.log(err);
+//   })
 
 
 
