@@ -1,4 +1,5 @@
-const request = require('request');
+const request = require('request'); // Do i still need this?
+const rp = require('request-promise');
 const EventEmitter = require('events').EventEmitter;
 // Dates Library modules
 const parse = require('date-fns/parse');
@@ -28,67 +29,98 @@ var shopifyOrderCount = "https://" + apiKey + ":" + apiPassword + "@" + hostname
 // console.log(shopifyOrderCount);
 
 
-// Check order count
-var orderCount;
-var shopifyRecordsLimit = 250;
+// General sudo code
+  // make call for orders count
+  // break up orders count based on number
+  // make required number of API requests for information
+  // join requests into one object
+  // do statistical analysis
+  // send data to endpoint
 
-request( shopifyOrderCount, function(error, response, body) {
-  if (error) {
-    console.log(error);
-  } else {
-    orderCount = JSON.parse(body).count;
-    console.log(orderCount);
 
-    if (orderCount > shopifyRecordsLimit) {
-      // break into 15 requests; 2 day spans
-      // console.log("to many orders");
-      // retreiveShopifySalesData()
-      console.log(retreiveShopifySalesData());
+var shopifyOrderCountOptions = {
+  uri: shopifyOrderCount,
+  headers: { 'User-Agent': 'Request-Promise'},
+  json: true
+}
+
+rp(shopifyOrderCountOptions)
+  .then(function(countResponse){
+    console.log(countResponse)
+    var shopifyRecordsLimit = 250;
+    var limitError = countResponse < 7499;
+    
+    if (countResponse > shopifyRecordsLimit && limitError) {
+      retreiveShopifySalesData().then(function(){
+
+      });
     } else {
+      console.log("*** Warning: Shopify limit error line 57 *** ")
 
     }
+
+
+  })
+  .catch(function(error){
+    console.log(error)
+  });
+
+
+function retreiveAllShopifySalesData(startDate, endDate){
+  var orderRecordsPath   = "/admin/orders.json";
+  var datesArr = createDates30(startDate, endDate); //returns end/start date array
+  var salesData = {};
+
+  for (let i = 0; i < datesArr.length; i++) {
+    let startDate = datesArr[i][0];
+    let endDate = datesArr[i][1];
+    let shopifyOrderRecords = "https://" + apiKey + ":" + apiPassword + "@" + hostname + orderRecordsPath + 
+    "?status=any&created_at_min=" + startDate + "&created_at_max=" + endDate + "&fields=created-at,total-price&limit=250&page=1";
+    let shopifyOrderRecordsOptions = {
+      uri: shopifyOrderRecords,
+      headers: { 'User-Agent': 'Request-Promise'},
+      json: true
+    }
+
+    rp(shopifyOrderRecordsOptions)
+      .then(function(daysOrderRecords) {
+        salesData[i] + daysOrderRecords;
+      })
+      .catch(function(error){
+        console.log(error)
+      })
   }
-});
-
-
-function sendSalesDataCyfeDashBoard() {
-
-
-}
-
-function orgSalesData() {
-
-}
-
-function shopifyAPICalls(argument) {
-  // body...
-}
-
-function combineMultiDataCallResults(){
-
+  // this function still needs to return snyc.
 }
 
 
-
-function retreiveShopifySalesData(startDate, endDate, callback) {
+function createDates30(startDate, endDate) {
   startDate = startDate || dateRang.startingYYYYMMD;
   endDate   = endDate   || dateRang.endingYYYYMMDD;
   console.log("start & end dates",startDate,endDate);
 
-  var salesData;
-
-  var orderRecordsPath   = "/admin/orders.json";
-  var orderRecordsParams = "?status=any&created_at_min=" + startDate + "&created_at_max=" + endDate + "&fields=created-at,total-price&limit=250&page=1";
-  var shopifyOrderRecords = "https://" + apiKey + ":" + apiPassword + "@" + hostname + orderRecordsPath + orderRecordsParams;
-
-// This is way to nested.... get help with refactor
-  request.get(shopifyOrderRecords, function(error, response, body){
-    console.log(error);
-    // console.log(body);
-    salesData = body;
-  })
-  // return data
-  while (salesData === undefined) {};
-  console.log(salesData, "logging");
-  return salesData;
 }
+
+  // var orderRecordsParams = "?status=any&created_at_min=" + startDate + "&created_at_max=" + endDate + "&fields=created-at,total-price&limit=250&page=1";
+
+
+
+// function retreiveShopifySalesData(startDate, endDate, callback) {
+//   startDate = startDate || dateRang.startingYYYYMMD;
+//   endDate   = endDate   || dateRang.endingYYYYMMDD;
+//   console.log("start & end dates",startDate,endDate);
+
+//   var salesData;
+
+
+// // This is way to nested.... get help with refactor
+//   request.get(shopifyOrderRecords, function(error, response, body){
+//     console.log(error);
+//     // console.log(body);
+//     salesData = body;
+//   })
+//   // return data
+//   while (salesData === undefined) {};
+//   console.log(salesData, "logging");
+//   return salesData;
+// }
