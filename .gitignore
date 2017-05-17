@@ -1,0 +1,7 @@
+cat .gitignore
+
+# ignore secrets file
+secrets.yml
+
+# lambda zip
+lambdapayload.zip

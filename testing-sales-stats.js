@@ -8,8 +8,8 @@ const format = require('date-fns/format')
 // SPLIT IMPLEMENTATION
     // due to Shopify API request records limitation of 250 max; This will check total number of purchases for last 30 days
     // and then split into multiple requests if total is greater than 250; then reassemble into one object
-var apiKey             = process.env.SPOTIFY_API_KEY;
-var apiPassword        = process.env.SPOTIFY_API_PASSWORD; //my be same as key
+var apiKey             = process.env.SHPOTIFY_API_KEY;
+var apiPassword        = process.env.SHPOTIFY_API_PASSWORD; //my be same as key
 var hostname           = "bitcoin-com-store.myshopify.com";
 
 // create date range last 30 days
