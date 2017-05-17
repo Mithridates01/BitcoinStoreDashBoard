@@ -9,7 +9,7 @@ const format = require('date-fns/format')
     // due to Shopify API request records limitation of 250 max; This will check total number of purchases for last 30 days
     // and then split into multiple requests if total is greater than 250; then reassemble into one object
 var apiKey             = process.env.SHPOTIFY_API_KEY;
-var apiPassword        = process.env.SHPOTIFY_API_PASSWORD; //my be same as key
+var apiPassword        = process.env.SHPOTIFY_API_PASSWORD;
 var hostname           = "bitcoin-com-store.myshopify.com";
 
 // create date range last 30 days
@@ -60,7 +60,7 @@ function orgSalesData() {
 
 }
 
-function shopifyMultiDataCall(argument) {
+function shopifyAPICalls(argument) {
   // body...
 }
 
@@ -92,67 +92,3 @@ function retreiveShopifySalesData(startDate, endDate, callback) {
   console.log(salesData, "logging");
   return salesData;
 }
-
-// retreiveShopifySalesData()
-//   .then(function(response) {
-//     handleResponse();
-//   })
-//   .fail(function(err) {
-//     console.log(err);
-//   })
-
-
-
-
-
-// request( spotifySalesApi, function(error, response, body) {
-//   if (error) {
-//     console.log(error);
-//   } else {
-//     console.log(body);
-//   }
-// });
-
-
-
-// CREATE REPORT IMPLEMENTATION
-// THIS CODE SHOULD CREATE A SALES REPORT WITH POST AND THEN BE ABLE TO PULL REPORT WITH REQUEST.
-// WHEN SITE HAS MORE TRAFFIC THIS SHOULD BE IMPLEMENTED TO IMPROVE EFFICIENCY.
-
-// var apiKey      = process.env.SPOTIFY_API_KEY;
-// var apiPassword = process.env.SPOTIFY_API_PASSWORD; //my be same as key
-// var hostname    = "bitcoin-com-store.myshopify.com";
-// var path        = "/admin/reports.json";
-// var query       = "";
-
-// ORDER DATES AND PRICES
-
-// var createReport = {
-//   "report": {
-//     "name": "A new app report",
-//     "shopify_ql": "SHOW total_sales BY country FROM order ORDER BY total_sales SINCE -1m UNTIL today"
-//   }
-// }
-
-// var spotifySalesApi = "https://" + apiKey + ":" + apiPassword + "@" + hostname + path ;
-
-
-
-// request.post(
-//   spotifySalesApi,
-//   {json: createReport},
-//   function(error, response, body) {
-//   if (error) {
-//     console.log(error);
-//   } else {
-//     console.log(body);
-//   }
-// });
-
-// request( spotifySalesApi, function(error, response, body) {
-//   if (error) {
-//     console.log(error);
-//   } else {
-//     console.log(body);
-//   }
-// });
