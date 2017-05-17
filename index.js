@@ -7,7 +7,31 @@ exports.handler = function(event, context, callback) {
   var thirtyDayBtcPriceDates = "https://api.blockchain.info/charts/market-price?timespan=30days&rollingAverage=1days&format=json";
 
   // Cyfe Chart Endpoint APIs
+  var CyfeEndPointBtc2Weekchart = "https://app.cyfe.com/api/push/58fbdedf2dcee2373124513228822";
   var CyfeEndPointBtc30daychart = process.env.CYFE_CHART_API;
+
+  // Two week Test chart for bitcoin price
+  request( twoWeekBtcPriceDates, function(error, response, body) {
+    if (error) {console.log(error);}
+
+    marketData = filterMarketData( ( JSON.parse(body) ).values );
+
+    // Dashboard API payload;
+    // Onduplicate prevents matching data from past combining in dashboard
+    var priceData = {       data: marketData,
+                     onduplicate: { "BTC-USD": "replace"},
+                       yaxisshow: {"BTC-USD": "1"}
+                    };
+
+    // send data to Cyfe dashboard widget API-endpoint
+    request.post(
+      CyfeEndPointBtc2Weekchart,
+      { json: priceData },
+      function(error, response, body) {
+        console.log(body);
+      }
+    );
+  });
 
   // 30 day chart for bitcoin price
   request( thirtyDayBtcPriceDates, function(error, response, body) {
